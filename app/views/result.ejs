@@ -1,0 +1,115 @@
+<%- include('layouts/header') %>
+
+<div class="list-outside list-disc space-y-1 ps-5 hidden"></div>
+
+<div class="flex items-center justify-center min-h-screen">
+  <section class="flex gap-4 p-8 overflow-x-auto max-w-md w-full scroll-snap-x snap-mandatory no-scrollbar">
+
+  </section>
+</div>
+
+<script>
+  $(document).ready(function () {
+    function fetchImage(candidate, onComplete) {
+      $.ajax({
+        url: `/data/image?urut=${candidate.id}`,
+        type: 'POST',
+        xhrFields: {
+          responseType: 'blob'
+        },
+        success: function (imageData) {
+          onComplete(imageData);
+        },
+        error: function () {
+          $.ajax({
+            url: `/data/image?urut=${candidate.id}`,
+            type: 'POST',
+            xhrFields: {
+              responseType: 'blob'
+            },
+            success: function (imageData) {
+              onComplete(imageData);
+            },
+            error: function () {
+              location.reload();
+            }
+          });
+        }
+      });
+    }
+
+    function loadCandidates() {
+      $.ajax({
+        url: '/data/view?scope=1',
+        type: 'POST',
+        success: function (response) {
+
+          if (response.candidate && response.candidate.length > 0) {
+
+            let candidates = response.candidate;
+            let candidateImages = {};
+            let completedImages = 0;
+
+            let fullTotal = candidates.reduce((sum, item) => sum + item.total, 0);
+
+            $.each(candidates, function (index, candidate) {
+              fetchImage(candidate, function (imageData) {
+                candidateImages[candidate.id] = imageData;
+                completedImages++;
+
+                if (completedImages === candidates.length) {
+                  $.each(candidates, function (i, candidate) {
+                    let imageSrc = candidateImages[candidate.id];
+
+                    if (imageSrc instanceof Blob) {
+                      imageSrc = URL.createObjectURL(imageSrc);
+                    }
+
+                    let candidateCard = `
+                      <div class="flex flex-col p-4 bg-white border border-gray-200 rounded-xl shadow-lg snap-center w-full flex-shrink-0">
+                          <div class="relative w-full aspect-[4/3] overflow-hidden bg-white rounded-xl flex items-center justify-center mt-1">
+                              <img src="${imageSrc}" alt="Foto Kandidat" class="max-w-full max-h-full rounded-xl border border-gray-50">
+                          </div>
+                          <div class="p-2 mt-2 flex-grow">
+                              <h1 class="font-bold text-lg sm:text-xl text-center">KANDIDAT ${i + 1}</h1>
+                              <p class="text-sm sm:text-md uppercase text-center font-bold text-gray-800 break-words">${candidate.nama}</p>
+                              <div class="ext-sm sm:text-md text-gray-800 break-words mt-2">
+                                <div class="flex items-center justify-between w-full mt-5">
+                                  <div class="flex items-center justify-center h-full w-full">
+                                    <span class="uppercase font-semibold">Pemilih: ${candidate.total}/${fullTotal}</span>
+                                  </div>
+
+                                  <div class="border-l-2 border-gray-200 h-10 mx-4"></div>
+
+                                  <div class="flex items-center justify-center h-full w-full">
+                                    <span class="uppercase font-semibold">Rasio: ${((candidate.total / fullTotal) * 100).toFixed(1)}%</span>
+                                  </div >
+                                </div >
+
+                              </div >
+                          </div >
+                      </div >`;
+                    $('section.flex').append(candidateCard);
+                  });
+                }
+              });
+            });
+          } else {
+            setTimeout(function () {
+              location.reload();
+            }, 5000);
+          }
+        },
+        error: function () {
+          setTimeout(function () {
+            location.reload();
+          }, 5000);
+        }
+      });
+    }
+
+    loadCandidates();
+  });
+</script>
+
+<%- include('layouts/footer') %>

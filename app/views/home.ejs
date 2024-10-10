@@ -1,0 +1,125 @@
+<%- include('layouts/header') %>
+
+<div class="list-outside list-disc space-y-1 ps-5 hidden"></div>
+
+<div class="flex items-center justify-center min-h-screen">
+  <section class="flex gap-4 p-8 overflow-x-auto max-w-md w-full scroll-snap-x snap-mandatory no-scrollbar">
+
+  </section>
+</div>
+
+<script>
+  $(document).ready(function () {
+    function fetchImage(candidate, onComplete) {
+      $.ajax({
+        url: `/data/image?urut=${candidate.id}`,
+        type: 'POST',
+        xhrFields: {
+          responseType: 'blob'
+        },
+        success: function (imageData) {
+          onComplete(imageData);
+        },
+        error: function () {
+          $.ajax({
+            url: `/data/image?urut=${candidate.id}`,
+            type: 'POST',
+            xhrFields: {
+              responseType: 'blob'
+            },
+            success: function (imageData) {
+              onComplete(imageData);
+            },
+            error: function () {
+              location.reload();
+            }
+          });
+        }
+      });
+    }
+
+    function loadCandidates() {
+      $.ajax({
+        url: '/data/view?scope=1',
+        type: 'POST',
+        success: function (response) {
+          if (response.candidate && response.candidate.length > 0) {
+            let candidates = response.candidate;
+            let candidateImages = {};
+            let completedImages = 0;
+
+            $.each(candidates, function (index, candidate) {
+              fetchImage(candidate, function (imageData) {
+                candidateImages[candidate.id] = imageData;
+                completedImages++;
+
+                if (completedImages === candidates.length) {
+                  $.each(candidates, function (i, candidate) {
+                    let imageSrc = candidateImages[candidate.id];
+
+                    if (imageSrc instanceof Blob) {
+                      imageSrc = URL.createObjectURL(imageSrc);
+                    }
+
+                    let candidateCard = `
+                      <div class="flex flex-col p-4 bg-white border border-gray-200 rounded-xl shadow-lg snap-center w-full flex-shrink-0">
+                          <div class="relative w-full aspect-[4/3] overflow-hidden bg-white rounded-xl flex items-center justify-center mt-1">
+                              <img src="${imageSrc}" alt="Foto Kandidat" class="max-w-full max-h-full rounded-xl border border-gray-50">
+                          </div>
+                          <div class="p-2 mt-2 flex-grow">
+                              <h1 class="font-bold text-lg sm:text-xl text-center">KANDIDAT ${i + 1}</h1>
+                              <p class="text-sm sm:text-md uppercase text-center font-bold text-gray-800 break-words">${candidate.nama}</p>
+                              <div class="ext-sm sm:text-md text-gray-800 break-words mt-2">${formatDescription(candidate.deskripsi.split('\n').slice(0, 5).join('\n').substring(0, 256))}${candidate.deskripsi.length > 256 ? "<br>..." : ""}</div>
+                          </div>
+                          <div class="m-2">
+                              <button data-nomor="${candidate.id}"
+                                      class="text-white bg-green-500 px-6 py-1 rounded-md hover:bg-green-600 flex items-center space-x-4">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" class="fill-current">
+                                      <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
+                                      <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />
+                                  </svg>
+                                  <span>Detail</span>
+                              </button>
+                          </div>
+                      </div>`;
+                    $('section.flex').append(candidateCard);
+                  });
+                }
+              });
+            });
+          } else {
+            setTimeout(function () {
+              location.reload();
+            }, 5000);
+          }
+        },
+        error: function () {
+          setTimeout(function () {
+            location.reload();
+          }, 5000);
+        }
+      });
+    }
+
+    loadCandidates();
+
+    $(document).on('click', 'button[data-nomor]', function () {
+      const nomor = $(this).attr('data-nomor');
+
+      const $form = $('<form>', {
+        method: 'POST',
+        action: '/'
+      });
+
+      $('<input>', {
+        type: 'hidden',
+        name: 'urut',
+        value: nomor
+      }).appendTo($form);
+
+      $form.appendTo('body').submit();
+    });
+  });
+</script>
+
+<%- include('layouts/footer') %>

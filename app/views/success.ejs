@@ -1,0 +1,48 @@
+<%- include('layouts/header') %>
+
+<div class="flex items-center justify-center min-h-screen">
+  <div class="flex flex-col p-4 bg-white border border-gray-200 rounded-xl shadow-lg w-full flex-shrink-0 max-w-md">
+
+    <!-- Ikon Centang dalam Lingkaran -->
+    <div class="flex items-center justify-center mb-6 mt-4">
+      <div class="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12l5 5L20 7" />
+        </svg>
+      </div>
+    </div>
+
+    <h1 class="text-2xl font-bold text-green-600 text-center">Berhasil!</h1>
+    <p class="mt-4 text-gray-600 text-center">Terima kasih telah memberikan suara Anda.</p>
+
+    <div class="mt-6">
+      <h2 class="text-lg font-semibold">Rincian suara</h2>
+      <table class="w-full mt-2">
+        <tbody class="text-gray-700">
+          <tr>
+            <td class="py-2 w-0">Token</td>
+            <td class="pl-2">: <span class="pl-1 font-medium"><%= token %></span></td>
+          </tr>
+          <tr>
+            <td class="py-2 w-0">Dipilih</td>
+            <td class="pl-2">: <span class="pl-1 font-medium">Kandidat <%= voted %></span></td>
+          </tr>
+          <tr>
+            <td class="py-2 w-0">Waktu</td>
+            <td class="pl-2">: <span class="pl-1 font-medium"><%= time %></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6">
+      <button onclick="window.location.href='/'"
+        class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded-xl focus:outline-none focus:shadow-outline">
+        Kembali ke Beranda
+      </button>
+    </div>
+  </div>
+</div>
+
+<%- include('layouts/footer') %>

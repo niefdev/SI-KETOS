@@ -1,0 +1,115 @@
+<%- include('layouts/header') %>
+
+<div class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white rounded-lg shadow-lg p-8 w-96">
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-6"><%= header %></h1>
+    <form id="login-form" method="POST">
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium text-gray-700"><%= label %></label>
+        <input type="<%= label == "PASSWORD" ? "password" : "text" %>" id="password" name="password" required
+          placeholder="xxxxxxxx"
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500 focus:border-blue-500 p-2">
+        <input type="hidden" id="asAdmin" name="admin" value="<%= admin %>">
+      </div>
+      <div class="mb-4">
+        <label for="captcha-input" class="block text-sm font-medium text-gray-700">CAPTCHA</label>
+        <div class="mb-2" id="captcha-img">
+        </div>
+        <div class="max-w-sm space-y-3">
+          <div>
+            <div class="relative">
+              <input type="text" id="captcha-input" name="captcha" placeholder="Masukkan captcha disini ..."
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500 focus:border-blue-500 p-2"
+                required>
+              <div class="absolute inset-y-0 end-0 flex items-center z-20 p-4 cursor-pointer" id="refresh-captcha">
+                <svg fill="#757575" version="1.1" id="Capa_1" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 489.645 489.645" xml:space="preserve">
+                  <g>
+                    <path d="M460.656,132.911c-58.7-122.1-212.2-166.5-331.8-104.1c-9.4,5.2-13.5,16.6-8.3,27c5.2,9.4,16.6,13.5,27,8.3
+                 c99.9-52,227.4-14.9,276.7,86.3c65.4,134.3-19,236.7-87.4,274.6c-93.1,51.7-211.2,17.4-267.6-70.7l69.3,14.5
+                 c10.4,2.1,21.8-4.2,23.9-15.6c2.1-10.4-4.2-21.8-15.6-23.9l-122.8-25c-20.6-2-25,16.6-23.9,22.9l15.6,123.8
+                 c1,10.4,9.4,17.7,19.8,17.7c12.8,0,20.8-12.5,19.8-23.9l-6-50.5c57.4,70.8,170.3,131.2,307.4,68.2
+                 C414.856,432.511,548.256,314.811,460.656,132.911z" />
+                  </g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="submit"
+        class="bg-green-500 text-white py-2 px-4 rounded w-full min-w-[15em] mt-1 hover:bg-green-600">Konfirmasi</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function loadCaptcha() {
+    $.post({
+      url: '/auth/captcha',
+      dataType: 'text',
+      success: function (data) {
+        $('#captcha-img').html(data);
+        resetCaptchaTimeout();
+      },
+      error: function () {
+        setTimeout(loadCaptcha, 5000);
+      }
+    });
+  }
+
+  let captchaTimeout;
+
+  function resetCaptchaTimeout() {
+    if (captchaTimeout) {
+      clearTimeout(captchaTimeout);
+    }
+
+    captchaTimeout = setTimeout(function () {
+      loadCaptcha();
+    }, 60000);
+  }
+
+  $(document).ready(function () {
+    loadCaptcha();
+
+    $('#refresh-captcha').on('click', function () {
+      loadCaptcha();
+    });
+
+    $('#login-form').on('submit', function (e) {
+      e.preventDefault();
+
+      const formData = $(this).serialize();
+
+      $.ajax({
+        url: '/auth/login',
+        method: 'POST',
+        data: formData,
+        success: function (response) {
+          if (response.redirect) {
+            window.location.href = response.redirect;
+          } else {
+            location.reload();
+          }
+        },
+        error: function (xhr) {
+
+          $("#captcha-input").val("")
+
+          loadCaptcha();
+
+          let errorMessage = "Terjadi masalah pada server.";
+
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            errorMessage = xhr.responseJSON.message;
+          }
+
+          notifier('warning', errorMessage)
+        }
+      });
+    });
+  });
+</script>
+
+<%- include('layouts/footer') %>

@@ -1,0 +1,705 @@
+<%- include('layouts/header') %>
+
+<div class="container mx-auto mt-10 px-4">
+  <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center">
+    <div class="flex items-center">
+      <h1 class="text-2xl font-bold text-gray-800">SI KETOS</h1>
+      <h2 class="text-md text-gray-600 ml-2 -mb-1">V 1.0</h2>
+    </div>
+    <div>
+      <button
+        class="bg-red-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-red-600 disabled:cursor-not-allowed"
+        id="logout-button">Keluar</button>
+    </div>
+  </div>
+
+  <div class="shadow-lg rounded-lg mb-6 p-5 bg-white border border-gray-300">
+    <label class="uppercase block text-md font-semibold mb-3">Kontrol</label>
+    <div class="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-8">
+      <div class="flex items-center">
+        <input id="pembukaan" name="kontrol" type="radio" class="form-radio text-blue-500" />
+        <label for="pembukaan" class="ml-2">Pembukaan</label>
+      </div>
+      <div class="flex items-center">
+        <input id="pemilihan" name="kontrol" type="radio" class="form-radio text-blue-500" />
+        <label for="pemilihan" class="ml-2">Pemilihan</label>
+      </div>
+      <div class="flex items-center">
+        <input id="penghitungan" name="kontrol" type="radio" class="form-radio text-blue-500" />
+        <label for="penghitungan" class="ml-2">Penghitungan</label>
+      </div>
+      <div class="flex items-center">
+        <input id="penghapusan" name="kontrol" type="radio" class="form-radio text-blue-500" />
+        <label for="penghapusan" class="ml-2">Penutupan</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="shadow-lg rounded-lg mb-6 p-5 bg-white border border-gray-300">
+    <label class="uppercase block text-md font-semibold mb-3">Token</label>
+    <div class="flex flex-col space-y-4">
+      <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+        <div class="flex flex-col w-full md:w-1/4">
+          <label for="seed-input" class="text-sm font-medium text-gray-700">Seed</label>
+          <input type="text" id="seed-input" placeholder="8 karakter"
+            class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm transition duration-150 ease-in-out" />
+        </div>
+
+        <div class="flex flex-col w-full md:w-1/4">
+          <label for="voter-input" class="text-sm font-medium text-gray-700">Jumlah Pemilih</label>
+          <input type="number" id="voter-input" placeholder="1-10240" min="1" max="10240"
+            class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm transition duration-150 ease-in-out" />
+        </div>
+      </div>
+
+      <div class="flex justify-start space-x-4">
+        <button
+          class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed"
+          id="save-token">Simpan</button>
+
+        <button
+          class="bg-blue-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-600 disabled:cursor-not-allowed"
+          id="download-token">Unduh</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shadow-lg rounded-lg mb-6 p-5 bg-white border border-gray-300" id="candidate-section">
+    <div class="flex justify-between items-center mb-5">
+      <label for="dropdownNavbarLink" class="uppercase block text-md font-semibold">Kandidat</label>
+      <div class="relative inline-block text-left flex items-center space-x-2">
+        <div class="space-y-2 sm:relative sm:inline-block sm:flex sm:items-center sm:space-x-2 sm:space-y-0">
+          <button
+            class="flex items-center justify-center p-3 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+            id="arrow-up" disabled>
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+
+          <button
+            class="flex items-center justify-center p-3 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+            id="arrow-down" disabled>
+            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+        <div class="relative inline-block text-left">
+
+          <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownMenu"
+            class="relative flex items-center justify-between py-2 px-4 text-gray-700 bg-gray-100 border border-gray-300 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span id="dropdownText" data="1">Kandidat 1</span>
+            <svg id="dropdownIcon" class="w-4 h-4 ms-3 transition-transform duration-200" aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 4 4 4-4" />
+            </svg>
+          </button>
+
+          <div id="dropdownMenu"
+            class="hidden absolute right-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row items-center">
+      <div
+        class="relative w-40 h-40 md:w-60 md:h-60 mt-0  md:mt-1 flex items-center justify-center bg-gray-200 overflow-hidden rounded-lg mr-6">
+        <img id="candidate-photo" src="" alt="Foto Kandidat"
+          class="object-contain w-full h-full transition-opacity duration-200 ease-in-out">
+
+        <div id="upload-icon"
+          class="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-100 rounded-lg transition-opacity duration-200 ease-in-out border border-gray-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
+            class="bi bi-cloud-arrow-up-fill" viewBox="0 0 16 16">
+            <path
+              d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 5.146a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708l2-2a.5.5 0 0 1 .708 0z" />
+          </svg>
+        </div>
+
+        <input type="file" id="upload-photo" class="hidden" accept="image/*">
+      </div>
+
+      <div class="flex-grow w-full md:w-2/3 mt-4 md:mt-0">
+        <div class="mb-3">
+          <label for="candidateName" class="text-sm font-medium text-gray-700">Nama Kandidat</label>
+          <input id="candidateName" type="text" placeholder="Nama Kandidat"
+            class="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm">
+        </div>
+        <div>
+          <label for="candidateDescription" class="text-sm font-medium text-gray-700">Deskripsi</label>
+          <textarea id="candidateDescription" placeholder="Deskripsi"
+            class="w-full md:w-2/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:text-sm transition duration-150 ease-in-out h-32 resize-none"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-start space-x-4 mt-4">
+      <button
+        class="bg-green-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed"
+        id="save-candidates">Simpan</button>
+
+      <button
+        class="bg-red-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed"
+        id="delete-button">Hapus</button>
+
+    </div>
+  </div>
+
+</div>
+
+<div id="logoutModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+  <div class="bg-white rounded-lg overflow-hidden shadow-lg max-w-sm w-full">
+    <div class="p-5 py-6">
+      <h2 class="text-xl font-bold  mb-4">Konfirmasi</h2>
+      <p class="">Apakah Anda yakin ingin keluar?</p>
+      <div class="flex justify-end mt-6">
+        <button
+          class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+          id="confirm-logout">Ya, Keluar</button>
+        <button
+          class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 ml-4"
+          id="cancel-logout">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="deleteCandidateModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+  <div class="bg-white rounded-lg overflow-hidden shadow-lg max-w-sm w-full">
+    <div class="p-5 py-6">
+      <h2 class="text-xl font-bold mb-4">Konfirmasi</h2>
+      <p>Apakah Anda yakin ingin menghapus data kandidat ini?</p>
+      <div class="flex justify-end mt-6">
+        <button
+          class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+          id="confirm-delete">Ya, Hapus</button>
+        <button
+          class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 ml-4"
+          id="cancel-delete">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="changeConfirmationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+  <div class="bg-white rounded-lg overflow-hidden shadow-lg max-w-sm w-full">
+    <div class="p-5 py-6">
+      <h2 class="text-xl font-bold mb-4">Konfirmasi</h2>
+      <p>Yakin ingin membuat/melanjutkan sesi? tindakan ini tidak dapat dibatalkan</p>
+      <div class="flex justify-end mt-6">
+        <button
+          class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          id="confirm-change">Ya, Lanjutkan</button>
+        <button
+          class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 ml-4"
+          id="cancel-change">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  var data;
+  var backupImg;
+  var disable = false;
+  var lastChecked;
+
+  function changeOrder(enable) {
+    if (enable && !disable) {
+      $('#arrow-up').removeAttr('disabled')
+      $('#arrow-down').removeAttr('disabled')
+      $('#delete-button').removeAttr('disabled')
+    } else {
+      $('#arrow-up').attr('disabled', true)
+      $('#arrow-down').attr('disabled', true)
+      $('#delete-button').attr('disabled', true)
+    }
+  }
+
+  function loadData() {
+    $.post("/data/view?scope=2", {}, (response) => {
+      data = response;
+
+      $("button").filter(function () {
+        return $(this).text() === "Simpan" || $(this).text() === "Hapus" || $(this).attr("id") == "arrow-up" || $(this).attr("id") == "arrow-down";
+      }).prop('disabled', response.variable.phase >= 1);
+
+      $("input:not([type='radio']), textarea").prop('disabled', response.variable.phase >= 1);
+
+      disable = response.variable.phase >= 1;
+
+      renderData("candidate");
+
+    })
+      .fail(() => {
+        data = {};
+        setTimeout(loadData, 2000);
+      });
+  }
+
+  function renderData(selected) {
+    if (!data || (!(selected in data) && !(selected in data.variable))) {
+      setTimeout(() => renderData(selected), 100);
+      return;
+    }
+
+    if (selected == "phase") {
+      $("#pembukaan").prop('checked', data.variable.phase == 1);
+      $("#pemilihan").prop('checked', data.variable.phase == 2);
+      $("#penghitungan").prop('checked', data.variable.phase == 3);
+
+      lastChecked = $('input[name="kontrol"]:checked');
+    }
+
+    if (selected == "seed") {
+      $("#seed-input").val(data.variable.seed);
+    }
+
+    if (selected == "voter") {
+      $("#voter-input").val(data.variable.voter);
+    }
+
+    if (selected == "candidate") {
+      const childCount = data.candidate.length;
+
+      data.candidate.sort((a, b) => a.id - b.id);
+
+      $('#dropdownMenu').empty();
+
+      $.each(data.candidate, function (index, kandidat) {
+        $('#dropdownMenu').append(`<a href="#" data="${kandidat.id}" class="dropdown-item block px-4 py-2 text-gray-900 hover:bg-gray-100">Kandidat ${kandidat.id}</a>`);
+      });
+
+      if (childCount < 8 && !disable) {
+        $('#dropdownMenu').append(`<a href="#" data="${childCount + 1}" class="dropdown-item block px-4 py-2 text-gray-900 hover:bg-gray-100">Tambah Baru</a>`);
+      }
+
+      changeOrder(childCount > 0);
+    }
+
+    function updateRadioButtons() {
+
+      $('#pembukaan, #pemilihan, #penghitungan, #penghapusan').attr('disabled', true);
+
+      if ($('#pembukaan').is(':checked')) {
+        $('#pembukaan, #pemilihan, #penghapusan').removeAttr('disabled');
+      }
+
+      else if ($('#pemilihan').is(':checked')) {
+        $('#pemilihan, #penghitungan, #penghapusan').removeAttr('disabled');
+      }
+
+      else if ($('#penghitungan').is(':checked')) {
+        $('#penghitungan, #penghapusan').removeAttr('disabled');
+      }
+
+      else if ($('#penghapusan').is(':checked')) {
+        $('#penghapusan').prop('checked', false);
+        updateRadioButtons();
+      }
+
+      else {
+        $('#pembukaan').removeAttr('disabled');
+      }
+    }
+
+    $('input[type="radio"]').off('click').click(function (e) {
+
+      var currentChecked = $(this);
+
+      e.preventDefault();
+
+      if (currentChecked.attr('id') === 'pembukaan' && data.candidate.length <= 1) {
+        notifier('warning', 'Untuk memulai acara setidaknya dibutuhkan 2 atau lebih kandidat');
+        return;
+      }
+
+      $('#changeConfirmationModal').removeClass('hidden');
+
+      $('#confirm-change').off('click').on('click', function () {
+        let phase;
+        if (currentChecked.attr('id') === 'penghapusan') {
+          phase = 0;
+        } else if (currentChecked.attr('id') === 'pembukaan') {
+          phase = 1;
+        } else if (currentChecked.attr('id') === 'pemilihan') {
+          phase = 2;
+        } else if (currentChecked.attr('id') === 'penghitungan') {
+          phase = 3;
+        }
+
+        $.post(`/data/save?data=phase`, { phase: phase })
+          .done(function (response) {
+            loadData();
+            currentChecked.prop("checked", true);
+            lastChecked = currentChecked;
+            updateRadioButtons();
+            notifier('success', 'Sesi berhasil dilanjutkan.');
+          })
+          .fail(function (error) {
+            notifier('error', 'Gagal melanjutkan sesi.');
+          });
+
+        $('#changeConfirmationModal').addClass('hidden');
+      });
+
+      $('#cancel-change').off('click').on('click', function () {
+        $('#changeConfirmationModal').addClass('hidden');
+      });
+    });
+
+    updateRadioButtons();
+
+  }
+
+  function activateDropdown() {
+    $('#dropdownNavbarLink').on('click', function () {
+      $('#dropdownMenu').toggleClass('hidden');
+
+      if (!$('#dropdownMenu').hasClass('hidden')) {
+        $('#dropdownIcon').css('transform', 'rotate(0deg)');
+      } else {
+        $('#dropdownIcon').css('transform', 'rotate(90deg)');
+      }
+    });
+
+    $(document).on('click', function (event) {
+
+      if (!$(event.target).closest('#dropdownNavbarLink').length &&
+        !$(event.target).closest('#dropdownMenu').length) {
+        $('#dropdownMenu').addClass('hidden');
+        $('#dropdownIcon').css('transform', 'rotate(90deg)');
+      }
+
+      if ($(event.target).hasClass('dropdown-item')) {
+
+        event.preventDefault();
+
+        const selectedValue = $(event.target).attr('data');
+
+        $("#dropdownText").text("Kandidat " + selectedValue)
+        $("#dropdownText").attr("data", selectedValue)
+
+        $('#dropdownMenu').addClass('hidden');
+        $('#dropdownIcon').css('transform', 'rotate(90deg)');
+
+        const item = data.candidate.find(element => element.id == selectedValue) || { nama: "", deskripsi: "" };
+
+        $('#candidateName').val(item.nama)
+        $('#candidateDescription').val(item.deskripsi)
+
+        loadImg();
+        changeOrder(!!item.nama);
+
+        if (item.nama) {
+          loadImg(selectedValue);
+        }
+      }
+    });
+  }
+
+  function loadImg(urut = 0) {
+    if (urut === 0) {
+      $('#candidate-photo').attr('src', '');
+      $('#upload-icon').show();
+      return;
+    }
+    $.ajax({
+      url: `/data/image?urut=${urut}`,
+      method: 'POST',
+      xhrFields: {
+        responseType: 'blob'
+      },
+      success: function (response, status, xhr) {
+        const contentType = xhr.getResponseHeader("Content-Type");
+        if (contentType && contentType.includes("image")) {
+          const file = new File([response], `photo_${urut}.jpg`, { type: contentType });
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+
+          $('#upload-photo')[0].files = dataTransfer.files;
+
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            $('#candidate-photo').attr('src', event.target.result);
+          };
+          reader.readAsDataURL(file);
+
+          $('#upload-icon').hide();
+        } else {
+          notifier('warning', 'Gambar tidak dapat ditampilkan, mohon reload halaman');
+        }
+      },
+      error: function () {
+        notifier('warning', 'Gambar tidak dapat ditampilkan, mohon reload halaman');
+      }
+    });
+  }
+
+  function trigDefaultData() {
+    if (!data || !data.candidate) {
+      setTimeout(trigDefaultData, 50);
+      return;
+    }
+
+    if ($("#dropdownMenu").children().length > 0) {
+      $("a[data='1']").click();
+    } else {
+      setTimeout(trigDefaultData, 50);
+    }
+  }
+
+  $(document).ready(function () {
+    loadData();
+    activateDropdown();
+    trigDefaultData();
+    renderData('phase');
+    renderData('seed');
+    renderData('voter');
+    renderData('candidate');
+
+    $(document).ready(function () {
+
+      $('#download-token').on('click', function () {
+        $.ajax({
+          url: '/data/tokens',
+          type: 'POST',
+          success: function (data) {
+            const blob = new Blob([data], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'tokens.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          },
+          error: function (xhr, status, error) {
+            console.error('Error downloading tokens:', error);
+          }
+        });
+      });
+
+      $('#delete-button').on('click', function () {
+        $('#deleteCandidateModal').removeClass('hidden');
+      });
+
+      $('#cancel-delete').on('click', function () {
+        $('#deleteCandidateModal').addClass('hidden');
+      });
+
+      $('#confirm-delete').on('click', function () {
+        const urut = $("#dropdownText").attr("data");
+        $('#deleteCandidateModal').addClass('hidden');
+        $.ajax({
+          url: `/data/delete?urut=${urut}`,
+          type: 'POST',
+          success: function (response) {
+            notifier('success', 'Data kandidat berhasil dihapus.');
+            delete data.candidate;
+            loadData();
+            renderData('candidate');
+            trigDefaultData();
+          },
+          error: function (xhr, status, error) {
+            notifier('error', 'Tidak dapat menghapus data kandidat.');
+          }
+        });
+      });
+
+      $('#arrow-up, #arrow-down').on('click', function () {
+        const currentOrder = $("#dropdownText").attr("data");
+        const direction = $(this).attr('id') === 'arrow-up' ? 1 : 0;
+
+        if (direction === 0 && parseInt(currentOrder) + 1 > data.candidate.length) {
+          return;
+        }
+
+        if (direction === 1 && parseInt(currentOrder) - 1 == 0) {
+          return;
+        }
+
+        const queryString = $.param({
+          order: currentOrder,
+          up: direction
+        });
+
+        $.ajax({
+          url: `/data/changeOrder?${queryString}`,
+          method: 'POST',
+          success: function (response) {
+            loadData();
+
+            const newData = direction === 1 ? parseInt(currentOrder) - 1 : parseInt(currentOrder) + 1;
+            $("#dropdownText").attr("data", newData);
+            $("#dropdownText").text("Kandidat " + newData);
+          },
+          error: function () {
+            notifier('warning', 'Gagal mengubah urutan kandidat');
+          }
+        });
+      });
+    });
+
+    $('#candidateDescription, #candidateName').on('input', function () {
+      let text = $(this).attr('id') === 'candidateDescription' ? $(this).val().replace(/\s\s\s+/g, ' ') : $(this).val().replace(/\s\s+/g, ' ');
+      let currentLength = 0;
+      let maxLength = $(this).attr('id') === 'candidateDescription' ? 1024 : 64;
+      let truncatedText = '';
+
+      for (let i = 0; i < text.length; i++) {
+        if (text[i] === '\n') {
+          currentLength += 2;
+        } else {
+          currentLength += 1;
+        }
+
+        if (currentLength <= maxLength) {
+          truncatedText += text[i];
+        } else {
+          break;
+        }
+      }
+
+      $(this).val(truncatedText);
+    });
+
+    $('#save-candidates').on('click', function () {
+      const photoInput = $('#upload-photo')[0].files[0];
+      const name = $('#candidateName').val().trim();
+      const description = $('#candidateDescription').val().trim();
+
+      if (!name.length) {
+        notifier('warning', 'Nama Kandidat harus diisi dan maksimal 64 karakter.');
+        return;
+      }
+
+      if (!description.length) {
+        notifier('warning', 'Deskripsi Kandidat harus diisi dan maksimal 1024 karakter.');
+        return;
+      }
+
+      if (!photoInput) {
+        notifier('warning', 'Foto Kandidat harus diunggah.');
+        return;
+      }
+
+      if (photoInput.size > 5 * 1024 * 1024) {
+        notifier('warning', 'Ukuran foto maksimal 5 MB.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('name', name.replace(/\r/g, ''));
+      formData.append('description', description.replace(/\r/g, ''));
+      formData.append('photo', photoInput);
+      formData.append('urut', $("#dropdownText").attr("data"));
+
+      $.ajax({
+        url: '/data/save?data=candidate',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        enctype: 'multipart/form-data',
+        success: function (response) {
+          notifier('success', 'Data kandidat berhasil disimpan.');
+          delete data.candidate
+          loadData();
+          renderData('candidate');
+          changeOrder(true);
+        },
+        error: function (xhr, status, error) {
+          notifier('error', 'Tidak dapat menyimpan data kandidat.');
+        }
+      });
+    });
+
+    $('#voter-input').on('input', function () {
+      let inputVal = $(this).val();
+
+      inputVal = inputVal.replace(/[^0-9]/g, '');
+
+      if (inputVal < 1 && inputVal != "") {
+        inputVal = "";
+      }
+
+      if (inputVal > 10240) {
+        inputVal = 10240;
+      }
+
+      $(this).val(inputVal != "" ? Number(inputVal) : "");
+    });
+
+    $('#seed-input').on('input', function () {
+      let seed = $(this).val();
+      let validSeed = (seed.match(/[!-~]/g)?.join('') || '').substring(0, 8);
+      $(this).val(validSeed);
+    });
+
+    $('#save-token').on('click', () => {
+      const seedValue = $('#seed-input').val();
+
+      if (seedValue.length === 8) {
+        $.post("/data/save?data=token", {
+          seed: seedValue,
+          voter: $('#voter-input').val()
+        }, () => {
+          notifier('success', 'Data berhasil disimpan');
+        }).fail(() => {
+          notifier('warning', 'Gagal menyimpan data');
+          renderData('seed');
+          renderData('voter');
+        });
+      } else {
+        notifier('warning', 'Seed harus terdiri dari 8 karakter');
+        renderData('seed');
+        renderData('voter');
+      }
+    });
+
+    $('#logout-button').click(function () {
+      $('#logoutModal').removeClass('hidden');
+    });
+
+    $('#cancel-logout').click(function () {
+      $('#logoutModal').addClass('hidden');
+    });
+
+    $('#confirm-logout').click(function () {
+      $.post('/auth/logout', function () {
+        window.location.href = '/admin';
+      });
+    });
+
+    $('#upload-photo').on('change', function (e) {
+
+      if (!e.target.files.length) {
+        e.target.files = backupImg
+      }
+
+      const [file] = e.target.files;
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          $('#candidate-photo').attr('src', event.target.result);
+          $('#upload-icon').hide();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    $('#candidate-photo, #upload-icon').on('click', function () {
+      $('#upload-photo').click();
+      backupImg = $('#upload-photo')[0].files
+    });
+  });
+</script>
+
+<%- include('layouts/footer') %>
