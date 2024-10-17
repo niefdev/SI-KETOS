@@ -38,6 +38,10 @@
       });
     }
 
+    function escapeChars(text) {
+      return $('<div/>').text(text).html()
+    }
+
     function loadCandidates() {
       $.ajax({
         url: '/data/view?scope=1',
@@ -68,11 +72,11 @@
                           </div>
                           <div class="p-2 mt-2 flex-grow">
                               <h1 class="font-bold text-lg sm:text-xl text-center">KANDIDAT ${i + 1}</h1>
-                              <p class="text-sm sm:text-md uppercase text-center font-bold text-gray-800 break-words">${candidate.nama}</p>
-                              <div class="ext-sm sm:text-md text-gray-800 break-words mt-2">${formatDescription(candidate.deskripsi.split('\n').slice(0, 5).join('\n').substring(0, 256))}${candidate.deskripsi.length > 256 ? "<br>..." : ""}</div>
+                              <p class="text-sm sm:text-md uppercase text-center font-bold text-gray-800 break-words">${escapeChars(candidate.nama)}</p>
+                              <div class="ext-sm sm:text-md text-gray-800 break-words mt-2">${escapeChars(formatDescription(candidate.deskripsi.split('\n').slice(0, 5).join('\n').substring(0, 256)))}${candidate.deskripsi.length > 256 ? "<br>..." : ""}</div>
                           </div>
                           <div class="m-2">
-                              <button data-nomor="${candidate.id}"
+                              <button data-nomor="${escapeChars(candidate.id)}"
                                       class="text-white bg-green-500 px-6 py-1 rounded-md hover:bg-green-600 flex items-center space-x-4">
                                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" class="fill-current">
                                       <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
