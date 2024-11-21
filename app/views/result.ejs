@@ -3,8 +3,16 @@
 <div class="list-outside list-disc space-y-1 ps-5 hidden"></div>
 
 <div class="flex items-center justify-center min-h-screen">
-  <section class="flex gap-4 p-8 overflow-x-auto max-w-md w-full scroll-snap-x snap-mandatory no-scrollbar">
-
+  <section
+    class="flex gap-4 p-8 overflow-x-auto max-w-md w-full scroll-snap-x snap-mandatory no-scrollbar"
+  >
+    <div
+      class="flex flex-col p-4 bg-white border border-gray-200 rounded-xl shadow-lg snap-center w-full flex-shrink-0"
+    >
+      <div class="p-2 mt-2 flex-grow">
+        <canvas id="doughnutChart" class="mt-4"></canvas>
+      </div>
+    </div>
   </section>
 </div>
 
@@ -13,9 +21,9 @@
     function fetchImage(candidate, onComplete) {
       $.ajax({
         url: `/data/image?urut=${candidate.id}`,
-        type: 'POST',
+        type: "POST",
         xhrFields: {
-          responseType: 'blob'
+          responseType: "blob",
         },
         success: function (imageData) {
           onComplete(imageData);
@@ -23,34 +31,100 @@
         error: function () {
           $.ajax({
             url: `/data/image?urut=${candidate.id}`,
-            type: 'POST',
+            type: "POST",
             xhrFields: {
-              responseType: 'blob'
+              responseType: "blob",
             },
             success: function (imageData) {
               onComplete(imageData);
             },
             error: function () {
               location.reload();
-            }
+            },
           });
-        }
+        },
       });
     }
 
     function loadCandidates() {
       $.ajax({
-        url: '/data/view?scope=1',
-        type: 'POST',
+        url: "/data/view?scope=1",
+        type: "POST",
         success: function (response) {
-
           if (response.candidate && response.candidate.length > 0) {
-
             let candidates = response.candidate;
             let candidateImages = {};
             let completedImages = 0;
 
-            let fullTotal = candidates.reduce((sum, item) => sum + item.total, 0);
+            let fullTotal = candidates.reduce(
+              (sum, item) => sum + item.total,
+              0
+            );
+
+            const dataValues = candidates
+              .sort((a, b) => a.id - b.id)
+              .map((item) => item.total);
+            const backgroundColors = [
+              "rgba(255, 99, 132, 0.8)",
+              "rgba(54, 162, 235, 0.8)",
+              "rgba(255, 206, 86, 0.8)",
+              "rgba(75, 192, 192, 0.8)",
+              "rgba(153, 102, 255, 0.8)",
+              "rgba(255, 159, 64, 0.8)",
+              "rgba(233, 30, 99, 0.8)",
+              "rgba(128, 128, 128, 0.8)",
+            ].slice(0, dataValues.length);
+
+            const dataLabels = dataValues.map(
+              (_, index) => `Calon ${index + 1}`
+            );
+
+            const ctx = $("#doughnutChart");
+            const doughnutChart = new Chart(ctx, {
+              type: "doughnut",
+              data: {
+                labels: dataLabels,
+                datasets: [
+                  {
+                    label: "Votes",
+                    data: dataValues,
+                    backgroundColor: backgroundColors,
+                    borderWidth: 1,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    display: true,
+                    padding: {
+                      top: 10,
+                      bottom: 10,
+                    },
+                  },
+                  title: {
+                    display: true,
+                    text: "Hasil Pemilihan",
+                    font: {
+                      size: 18,
+                      weight: "bold",
+                    },
+                    padding: {
+                      top: 10,
+                      bottom: 10,
+                    },
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function (tooltipItem) {
+                        return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                      },
+                    },
+                  },
+                },
+              },
+            });
 
             $.each(candidates, function (index, candidate) {
               fetchImage(candidate, function (imageData) {
@@ -71,25 +145,34 @@
                               <img src="${imageSrc}" alt="Foto Kandidat" class="max-w-full max-h-full rounded-xl border border-gray-50">
                           </div>
                           <div class="p-2 mt-2 flex-grow">
-                              <h1 class="font-bold text-lg sm:text-xl text-center">KANDIDAT ${i + 1}</h1>
-                              <p class="text-sm sm:text-md uppercase text-center font-bold text-gray-800 break-words">${candidate.nama}</p>
+                              <h1 class="font-bold text-lg sm:text-xl text-center">KANDIDAT ${
+                                i + 1
+                              }</h1>
+                              <p class="text-sm sm:text-md uppercase text-center font-bold text-gray-800 break-words">${
+                                candidate.nama
+                              }</p>
                               <div class="ext-sm sm:text-md text-gray-800 break-words mt-2">
                                 <div class="flex items-center justify-between w-full mt-5">
                                   <div class="flex items-center justify-center h-full w-full">
-                                    <span class="uppercase font-semibold">Pemilih: ${candidate.total}/${fullTotal}</span>
+                                    <span class="uppercase font-semibold">Pemilih: ${
+                                      candidate.total
+                                    }/${fullTotal}</span>
                                   </div>
 
                                   <div class="border-l-2 border-gray-200 h-10 mx-4"></div>
 
                                   <div class="flex items-center justify-center h-full w-full">
-                                    <span class="uppercase font-semibold">Rasio: ${((candidate.total / fullTotal) * 100).toFixed(1)}%</span>
+                                    <span class="uppercase font-semibold">Rasio: ${(
+                                      (candidate.total / fullTotal) *
+                                      100
+                                    ).toFixed(1)}%</span>
                                   </div >
                                 </div >
 
                               </div >
                           </div >
                       </div >`;
-                    $('section.flex').append(candidateCard);
+                    $("section.flex").append(candidateCard);
                   });
                 }
               });
@@ -104,7 +187,7 @@
           setTimeout(function () {
             location.reload();
           }, 5000);
-        }
+        },
       });
     }
 
